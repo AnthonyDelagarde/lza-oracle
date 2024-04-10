@@ -95,7 +95,7 @@ Write-Host "You need a valid Oracle Cloud Subscription to complete this implemen
 
 # Getting AzureAD Mudule to list what build  installed
 
-    Write-Host "Listing the PowerShell Module available on your system for Azure AD and microsoft.Graph" 
+    Write-Host "Listing the PowerShell Module available on your system for Azure AD and Microsoft.Graph" 
   
         Write-Host "The following AzureAD Modules are listed below"
             Get-Module AzureAD -ListAvailable
@@ -121,7 +121,7 @@ Write-Host "You need a valid Oracle Cloud Subscription to complete this implemen
 
 # Requesting the operator to enter the name for the Enterprise Application
   
-        $EntName = Read-Host "Please enter a name for your Enterprise Application"
+        $EntName = Read-Host "Please enter a name for your Enterprise Application, example OCI Federation"
 
 # Creating the Enterprise Application within Entra ID
 
@@ -151,18 +151,16 @@ Write-Host "You need a valid Oracle Cloud Subscription to complete this implemen
 
         $params = @{
              preferredSingleSignOnMode = "saml"
-        loginUrl                  = "https://cloud.oracle.com"
+        loginUrl = "https://cloud.oracle.com"
         }
 
     Update-MgServicePrincipal -ServicePrincipalId $prinID.Id -BodyParameter $params 
-
-
 
 # Geting the Application Name from Graph
   
         $app = get-mgapplication | where DisplayName -EQ $EntName 
 
-# Requesting the operator to enter the OCI Domain eq https://idcs-< Unique identifier >.identity.oraclecloud.com // You need a valid Oracle Cloud Subscription
+# Requesting the operator to enter the OCI Domain eq https://idcs-< Unique identifier >.identity.oraclecloud.com // You need a valid Oracle Cloud Subscription for this to complete properly
   
         $OCIFQDN = Read-Host "Please enter your Oracle Domain FQDN, example: https://idcs-< Unique identifier >.identity.oraclecloud.com" 
 
@@ -209,7 +207,7 @@ $params = @{
 Update-MgApplication -ApplicationId $app.Id -BodyParameter $params
 
 
-# Create a token signing certificate for the service principal
+# Creating a token signing certificate for the service principal
 
         $params = @{
                 displayName = "CN=OCIcloudMSFT"
@@ -242,24 +240,24 @@ Update-MgApplication -ApplicationId $app.Id -BodyParameter $params
    Write-Host "Creating required Oracle Groups within Entra Id" -ForegroundColor Yellow
     New-AzureAdGroup -DisplayName "odbaa-exa-infra-administrator" -Description "This group is for administrators who need to manage all Oracle Exadata Database Service resources in Azure" -MailEnabled $false -SecurityEnabled $true -MailNickName "Notset" 
         Write-Host "Created the Entra Id Group odbaa-exa-infra-administrator" -ForegroundColor Green
-            New-AzureAdGroup -DisplayName "odbaa-vm-cluster-administrator" -Description "User in this group can administer VM cluster resources in Azure" -MailEnabled $false -SecurityEnabled $true -MailNickName "Notset" 
+            New-AzureAdGroup -DisplayName "odbaa-vm-cluster-administrator" -Description "Users in this group can administer VM cluster resources in Azure" -MailEnabled $false -SecurityEnabled $true -MailNickName "Notset" 
                 Write-Host "Created the Entra Id Group odbaa-vm-cluster-administrator" -ForegroundColor Green
                 
-                New-AzureAdGroup -DisplayName "odbaa-db-family-administrators" -Description "User in this group can administer Oracle resources in Azure" -MailEnabled $false -SecurityEnabled $true -MailNickName "Notset" 
+                New-AzureAdGroup -DisplayName "odbaa-db-family-administrators" -Description "Users in this group can administer Oracle resources in Azure" -MailEnabled $false -SecurityEnabled $true -MailNickName "Notset" 
                  Write-Host "Created the Entra Id Group odbaa-db-family-administrators" -ForegroundColor Green
 
-                    New-AzureAdGroup -DisplayName "odbaa-db-family-readers" -Description "User in this group can read Oracle resources in Azure" -MailEnabled $false -SecurityEnabled $true -MailNickName "Notset" 
+                    New-AzureAdGroup -DisplayName "odbaa-db-family-readers" -Description "Users in this group can read Oracle resources in Azure" -MailEnabled $false -SecurityEnabled $true -MailNickName "Notset" 
                         Write-Host "Created the Entra Id Group odbaa-db-family-readers" -ForegroundColor Green
 
-                        New-AzureAdGroup -DisplayName "odbaa-exa-cdb-administrators" -Description "Note this azure user has access only in OCI console. Customer does not need to create a custom Azure role for this group" -MailEnabled $false -SecurityEnabled $true -MailNickName "Notset" 
+                        New-AzureAdGroup -DisplayName "odbaa-exa-cdb-administrators" -Description "Note users in this Azure Group has access only in the OCI console, but needed for Federation. " -MailEnabled $false -SecurityEnabled $true -MailNickName "Notset" 
                         Write-Host "Created the Entra Id Group odbaa-exa-cdb-administrators" -ForegroundColor Green
 
-                            New-AzureAdGroup -DisplayName "odbaa-exa-pdb-administrators" -Description "Note this azure user has access only in OCI console. Customer does not need to create a custom Azure role for this group" -MailEnabled $false -SecurityEnabled $true -MailNickName "Notset" 
+                            New-AzureAdGroup -DisplayName "odbaa-exa-pdb-administrators" -Description "This Azure Group has access only in the OCI console, but needed for Federation." -MailEnabled $false -SecurityEnabled $true -MailNickName "Notset" 
                         Write-Host "Created the Entra Id Group odbaa-exa-pdb-administrators" -ForegroundColor Green
                  
-                    New-AzureAdGroup -DisplayName "odbaa-network-administrators" -Description "Note this azure user has access only in OCI console. Customer does not need to create a custom Azure role for this group" -MailEnabled $false -SecurityEnabled $true -MailNickName "Notset" 
+                    New-AzureAdGroup -DisplayName "odbaa-network-administrators" -Description "Note this Azure Group has access only in the OCI console, but needed for Federation. " -MailEnabled $false -SecurityEnabled $true -MailNickName "Notset" 
                  Write-Host "Created the Entra Id Group odbaa-network-administrators" -ForegroundColor Green
-        New-AzureAdGroup -DisplayName "odbaa-costmgmt-administrators" -Description "Note this azure user has access only in OCI console. Customer does not need to create a custom Azure role for this group" -MailEnabled $false -SecurityEnabled $true -MailNickName "Notset" 
+        New-AzureAdGroup -DisplayName "odbaa-costmgmt-administrators" -Description "Note this Azure Group has access only in the OCI console, but needed for Federation." -MailEnabled $false -SecurityEnabled $true -MailNickName "Notset" 
     Write-Host "Created the Entra Id Group odbaa-costmgmt-administrators" -ForegroundColor Green
                   
 
@@ -300,11 +298,3 @@ Update-MgApplication -ApplicationId $app.Id -BodyParameter $params
  Write-Host "Provisioning has completed. Please test your Application Federation with Oracle Cloud Infrastructure!!!"  -ForegroundColor Green
 
 # Assigning a Group to the Enterprise Application Requires P1 or P2 Entra Id Licensces
-
-# Getting the Group Name
-   
-   # $group  = Read-Host "Please enter the name of the entra Id Group you would like to add"
-   #         $groupId = (Get-AzureAdGroup -Filter "DisplayName eq '$group'").ObjectId
-   # $groupId
-    
-# New-AzureADServiceAppRoleAssignment -ObjectId $resource.ObjectId -ResourceId $resource.ObjectId -Id $appRole.Id -PrincipalId $groupId.ObjectId
