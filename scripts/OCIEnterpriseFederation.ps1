@@ -300,11 +300,3 @@ Update-MgApplication -ApplicationId $app.Id -BodyParameter $params
  Write-Host "Provisioning has completed. Please test your Application Federation with Oracle Cloud Infrastructure!!!"  -ForegroundColor Green
 
 # Assigning a Group to the Enterprise Application Requires P1 or P2 Entra Id Licensces
-
-# Getting the Group Name
-   
-   # $group  = Read-Host "Please enter the name of the entra Id Group you would like to add"
-   #         $groupId = (Get-AzureAdGroup -Filter "DisplayName eq '$group'").ObjectId
-   # $groupId
-    
-# New-AzureADServiceAppRoleAssignment -ObjectId $resource.ObjectId -ResourceId $resource.ObjectId -Id $appRole.Id -PrincipalId $groupId.ObjectId
